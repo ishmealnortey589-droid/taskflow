@@ -2,7 +2,7 @@
 
 A browser-based Kanban task board built for the SkillMe Full Stack Engineer Virtual Internship.
 
-**Live demo:** https://YOUR-SITE-NAME.netlify.app  
+**Live demo:** https://kabantaskflow.netlify.app  
 **Code:** https://github.com/ishmealnortey589-droid/taskflow
 
 ![Taskflow board](screenshot.png)
