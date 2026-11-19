@@ -27,7 +27,7 @@ function createCard(task) {
   const meta = document.createElement("div");
   meta.className = "task-meta";
   meta.innerHTML = `<span class="priority priority-${task.priority.toLowerCase()}">${task.priority}</span>
-                    <span>Due ${task.due}</span>`;
+                    <span>${task.due ? "Due " + task.due : ""}</span>`;
 
   const actions = document.createElement("div");
   actions.className = "task-actions";
@@ -74,7 +74,7 @@ form.addEventListener("submit", (e) => {
     id: nextId++,
     title,
     priority: prioritySelect.value,
-    due: "No date",
+    due: "",
     status: "todo",
   });
   form.reset();
@@ -92,7 +92,10 @@ document.querySelector(".board").addEventListener("click", (e) => {
   const index = STATUSES.indexOf(task.status);
   if (btn.dataset.action === "move-forward") task.status = STATUSES[index + 1];
   if (btn.dataset.action === "move-back") task.status = STATUSES[index - 1];
-  if (btn.dataset.action === "delete") tasks = tasks.filter((t) => t.id !== id);
+  if (btn.dataset.action === "delete") {
+    if (!confirm(`Delete "${task.title}"?`)) return;
+    tasks = tasks.filter((t) => t.id !== id);
+  }
   render();
 });
 
