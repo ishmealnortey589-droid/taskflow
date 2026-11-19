@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taskboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-name">Taskboard</h1>
+    <form class="add-task" id="add-form">
+      <input type="text" id="task-title" required placeholder="What needs doing?" aria-label="Task title">
+      <select id="task-priority" aria-label="Priority">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+      <button type="submit">Add task</button>
+    </form>
+  </header>
+
+  <section class="toolbar">
+    <input type="search" id="search" placeholder="Search tasks by title" aria-label="Search tasks">
+    <select id="filter-priority" aria-label="Filter by priority">
+      <option value="all">All priorities</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+    <button type="button" id="import-btn">Import sample tasks</button>
+    <button type="button" id="clear-btn" class="danger">Clear board</button>
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <main class="board">
+    <section class="column">
+      <h2 class="column-title">To Do <span class="count" id="count-todo">(0)</span></h2>
+      <div class="card-list" id="list-todo"></div>
+    </section>
+    <section class="column">
+      <h2 class="column-title">In Progress <span class="count" id="count-progress">(0)</span></h2>
+      <div class="card-list" id="list-progress"></div>
+    </section>
+    <section class="column">
+      <h2 class="column-title">Done <span class="count" id="count-done">(0)</span></h2>
+      <div class="card-list" id="list-done"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
