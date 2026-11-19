@@ -1,4 +1,4 @@
-// Week 3: saving, importing, searching
+// Week 4: drag and drop (plus saving, importing, searching)
 const STATUSES = ["todo", "progress", "done"];
 const STORAGE_KEY = "taskflow-tasks";
 const API_URL = "https://jsonplaceholder.typicode.com/todos?_limit=5";
@@ -44,6 +44,8 @@ function createCard(task) {
   const index = STATUSES.indexOf(task.status);
   const card = document.createElement("article");
   card.className = "task-card";
+  card.draggable = true;
+  card.dataset.id = task.id;
 
   const title = document.createElement("h3");
   title.className = "task-title";
@@ -122,23 +124,80 @@ form.addEventListener("submit", (e) => {
   render();
 });
 
-// ---------- Move and delete ----------
-document.querySelector(".board").addEventListener("click", (e) => {
+// ---------- Move and delete (buttons work with the keyboard) ----------
+const board = document.querySelector(".board");
+
+function moveTask(id, status) {
+  const task = tasks.find((t) => t.id === id);
+  if (!task || task.status === status) return;
+  task.status = status;
+  saveTasks();
+  render();
+}
+
+board.addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
   const id = Number(btn.dataset.id);
   const task = tasks.find((t) => t.id === id);
   if (!task) return;
 
+  const action = btn.dataset.action;
   const index = STATUSES.indexOf(task.status);
-  if (btn.dataset.action === "move-forward") task.status = STATUSES[index + 1];
-  if (btn.dataset.action === "move-back") task.status = STATUSES[index - 1];
-  if (btn.dataset.action === "delete") {
+
+  if (action === "delete") {
     if (!confirm(`Delete "${task.title}"?`)) return;
     tasks = tasks.filter((t) => t.id !== id);
+    saveTasks();
+    render();
+    return;
   }
-  saveTasks();
-  render();
+
+  moveTask(id, STATUSES[action === "move-forward" ? index + 1 : index - 1]);
+
+  // Keep keyboard focus on the moved card so users can keep going
+  const same = document.querySelector(`button[data-id="${id}"][data-action="${action}"]`);
+  (same || document.querySelector(`button[data-id="${id}"]`))?.focus();
+});
+
+// ---------- Drag and drop ----------
+let draggedId = null;
+
+board.addEventListener("dragstart", (e) => {
+  const card = e.target.closest(".task-card");
+  if (!card) return;
+  draggedId = Number(card.dataset.id);
+  e.dataTransfer.setData("text/plain", String(draggedId));
+  e.dataTransfer.effectAllowed = "move";
+  card.classList.add("dragging");
+});
+
+board.addEventListener("dragend", () => {
+  draggedId = null;
+  document.querySelectorAll(".dragging").forEach((el) => el.classList.remove("dragging"));
+  document.querySelectorAll(".drag-over").forEach((el) => el.classList.remove("drag-over"));
+});
+
+STATUSES.forEach((status) => {
+  const column = document.getElementById(`list-${status}`).closest(".column");
+
+  column.addEventListener("dragover", (e) => {
+    if (draggedId === null) return;
+    e.preventDefault(); // required, otherwise dropping is not allowed
+    e.dataTransfer.dropEffect = "move";
+    column.classList.add("drag-over");
+  });
+
+  column.addEventListener("dragleave", (e) => {
+    if (!column.contains(e.relatedTarget)) column.classList.remove("drag-over");
+  });
+
+  column.addEventListener("drop", (e) => {
+    e.preventDefault();
+    column.classList.remove("drag-over");
+    const id = Number(e.dataTransfer.getData("text/plain")) || draggedId;
+    moveTask(id, status);
+  });
 });
 
 // ---------- Import sample tasks ----------

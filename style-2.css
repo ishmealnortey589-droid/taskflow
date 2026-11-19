@@ -1,0 +1,197 @@
+:root {
+  --bg: #f3f4f8;
+  --surface: #ffffff;
+  --column-bg: #e8eaf1;
+  --text: #1c2033;
+  --muted: #667085;
+  --accent: #3b5bdb;
+  --low: #2f9e44;
+  --low-bg: #e6f6ea;
+  --medium: #b7791f;
+  --medium-bg: #fdf3dc;
+  --high: #d6336c;
+  --high-bg: #fde8ef;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  background: var(--surface);
+  border-bottom: 1px solid #dde1ea;
+}
+
+.app-name { font-size: 1.5rem; color: var(--accent); }
+
+.add-task { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.add-task input,
+.add-task select,
+.add-task button {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd0dc;
+  border-radius: 6px;
+}
+
+.add-task input { min-width: 220px; }
+
+.add-task button {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.add-task :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  padding: 2rem;
+  align-items: start;
+}
+
+.column {
+  background: var(--column-bg);
+  border-radius: var(--radius);
+  padding: 1rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.column-title { font-size: 1.05rem; }
+.count { color: var(--muted); font-weight: 400; }
+
+.task-card {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.task-title { font-size: 0.98rem; margin-bottom: 0.6rem; }
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.priority {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+.priority-low    { color: var(--low);    background: var(--low-bg); }
+.priority-medium { color: var(--medium); background: var(--medium-bg); }
+.priority-high   { color: var(--high);   background: var(--high-bg); }
+
+@media (max-width: 700px) {
+  .board { grid-template-columns: 1fr; padding: 1rem; }
+  .app-header { padding: 1rem; }
+  .add-task input { flex: 1 1 100%; }
+}
+
+/* Week 2: card actions */
+.card-list { display: flex; flex-direction: column; gap: 0.75rem; min-height: 2rem; }
+.empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 0.5rem; }
+
+.task-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #eceef4;
+}
+.task-actions button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #cbd0dc;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.task-actions button:hover { background: var(--column-bg); }
+.task-actions .delete { margin-left: auto; color: var(--high); border-color: var(--high-bg); }
+.task-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Week 3: toolbar, search, import status */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem 0;
+}
+.toolbar input,
+.toolbar select,
+.toolbar button {
+  font: inherit;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd0dc;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+.toolbar input { flex: 1 1 220px; max-width: 320px; }
+.toolbar button { cursor: pointer; }
+.toolbar button:hover { background: var(--column-bg); }
+.toolbar button:disabled { opacity: 0.6; cursor: wait; }
+.toolbar .danger { color: var(--high); }
+.toolbar :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.status { flex-basis: 100%; font-size: 0.9rem; color: var(--muted); min-height: 1.3rem; }
+.status.error { color: var(--high); }
+
+@media (max-width: 700px) {
+  .toolbar { padding: 1rem 1rem 0; }
+  .toolbar input { max-width: none; flex-basis: 100%; }
+}
+
+/* Week 4: drag and drop, focus styles */
+.task-card { cursor: grab; }
+.task-card:active { cursor: grabbing; }
+.task-card.dragging { opacity: 0.45; transform: rotate(1deg); }
+
+.column { transition: background 0.15s, outline-color 0.15s; outline: 2px dashed transparent; outline-offset: -2px; }
+.column.drag-over { background: #d9e0fb; outline-color: var(--accent); }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.task-card:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+
+@media (max-width: 700px) {
+  .add-task input { flex: 1 1 100%; min-width: 0; }
+  .add-task select, .add-task button { flex: 1; }
+  .toolbar button, .toolbar select { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .column, .task-card { transition: none; }
+  .task-card.dragging { transform: none; }
+}
